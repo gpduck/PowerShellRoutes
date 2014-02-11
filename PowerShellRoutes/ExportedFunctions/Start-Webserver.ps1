@@ -104,7 +104,7 @@
 #>
 function Start-WebServer {
     param(
-        $Routes,
+        $Routes = @{},
         $IPAddress = "+",
         $Port = "80"
     )
@@ -175,7 +175,7 @@ function Start-WebServer {
     }
 
     if(!$Routes.Contains("Exit")) {
-        $Routes.Add("Exit", $StopHandler)
+        $Routes.Add("Exit", $ExitHandler)
     }
 
     $Listener = New-Object System.Net.HttpListener
