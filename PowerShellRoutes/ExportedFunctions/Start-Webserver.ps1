@@ -105,7 +105,7 @@
 function Start-WebServer {
     param(
         $Routes = @{},
-        $IPAddress = "+",
+        $IPAddress = "localhost",
         $Port = "80"
     )
     function Stop-WebServer {
