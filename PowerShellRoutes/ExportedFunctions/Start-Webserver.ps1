@@ -157,7 +157,7 @@ function Start-WebServer {
         $Response.StatusCode = $StatusCode
         $Response.StatusDescription = $StatusDescription
         if($PsCmdlet.ParameterSetName -eq "File") {
-            $Extension = [IO.Path]::GetExtension($LocalPath)
+            $Extension = [IO.Path]::GetExtension($Path)
             if($Extension) {
                 $Type = Get-ContentType $Extension
             }
