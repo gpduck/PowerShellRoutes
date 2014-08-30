@@ -1,6 +1,6 @@
 Properties {
   if(!$OutDir) {
-    $OutDir = "Bin"
+    $OutDir = "bin"
   }
 
   if(!$ProjectDir) {
