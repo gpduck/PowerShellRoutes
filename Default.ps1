@@ -18,6 +18,10 @@ Properties {
   if(!$BasePath) {
     $BasePath = Join-Path $ProjectDir $ProjectName
   }
+
+  if(!$PublishUri) {
+    $PublishUri = "https://www.myget.org/F/gpduck/"
+  }
 }
 
 Task default
@@ -62,5 +66,13 @@ Task Pack -Depends GenerateVersion {
     mkdir $TargetDir > $null
   }
 
+  $Script:PackageFile = (Join-Path $TargetDir "$ProjectName.$Script:VersionString.nupkg")
   exec { &$Nuget pack $NuSpec -OutputDirectory $TargetDir -BasePath $BasePath -NoPackageAnalysis -NonInteractive -Version $Script:VersionString }
+}
+
+Task Publish -Depends Pack {
+  $Nuget = Get-Nuget
+
+  Assert (![String]::IsNullOrEmpty($NugetApiKey)) "NugetApiKey parameter must be specified for Publish task"
+  exec { &$Nuget push $Script:PackageFile -ApiKey $NugetApiKey -Source $PublishUri -NonInteractive }  
 }
