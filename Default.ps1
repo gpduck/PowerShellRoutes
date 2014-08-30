@@ -44,7 +44,7 @@ Task GenerateVersion {
   if($Env:Build_Number) {
     $OutputVersion = New-Object System.Version($NuSpecVersion.Major, $NuSpecVersion.Minor, $VersionDate, $Env:Build_Number)
     $Script:VersionString = $OutputVersion.ToString()
-    echo "BUILD_ID=$Script:VersionString"
+    Set-Content -Path (Join-Path $ProjectDir "build.env") -Value "BUILD_ID=$Script:VersionString"
   } else {
     $BuildTime = [int]([DateTime]::Now.TimeOfDay.TotalSeconds / 2)
     $OutputVersion = New-Object System.Version($NuSpecVersion.Major, $NuSpecVersion.Minor, $VersionDate, $BuildTime)
