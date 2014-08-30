@@ -125,6 +125,13 @@ function Start-WebServer {
         $GetMethod.Invoke($StatusDescription, $StatusCode)
     }
 
+    function Get-ContentType { 
+        param(
+            $Extension
+        )
+        (Get-ItemProperty "HKLM:\Software\Classes\$Extension" -Name "Content Type" -ErrorAction SilentlyContinue)."Content Type"
+    }
+
     function Send-Response {
         [CmdletBinding(DefaultParameterSetName="Raw")]
         param(
