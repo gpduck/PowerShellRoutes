@@ -150,7 +150,6 @@ function Start-WebServer {
 
             $StatusDescription
         )
-        $Response.ContentType = $ContentType
         if(!$PSBoundParameters.ContainsKey("StatusDescription")) {
             $StatusDescription = Get-RFC2616Description -StatusCode $StatusCode
         }
@@ -159,22 +158,16 @@ function Start-WebServer {
         if($PsCmdlet.ParameterSetName -eq "File") {
             $Extension = [IO.Path]::GetExtension($Path)
             if($Extension) {
-                $Type = Get-ContentType $Extension
+                $ContentType = Get-ContentType $Extension
             }
-            if(!$Type) {
-                $Type = "application/octet-stream"
+            if(!$ContentType) {
+                $ContentType = "application/octet-stream"
             }
-            if($Type.StartsWith("text/")) {
-                $Body = Get-Content -Path $Path -Raw
-                [byte[]]$Buffer = [System.Text.Encoding]::UTF8.GetBytes($Body)
-                $Stream = New-Object System.IO.MemoryStream($Buffer)
-            } else {
-                $Stream = [System.IO.File]::OpenRead($Path)
-                #$Stream = New-Object System.IO.BufferedStream($Buffer)
-            }
+            $Stream = [System.IO.File]::OpenRead($Path)
         } else {
             $Stream = New-Object System.IO.MemoryStream(,[System.Text.Encoding]::UTF8.GetBytes($Body))
         }
+        $Response.ContentType = $ContentType
         $Response.ContentLength64 = $Stream.Length
         $Stream.CopyTo($Response.OutputStream)
         #$Response.OutputStream.Write($Buffer, 0 , $Buffer.Length)
@@ -200,6 +193,7 @@ function Start-WebServer {
             $RouteContextFunctions = @{
                 "Send-Response" = ${Function:Send-Response}
                 "Stop-WebServer" = ${Function:Stop-WebServer}
+                "Get-ContentType" = ${Function:Get-ContentType}
             }
             $RouteContextVariables = @( (Get-Variable Request), (Get-Variable Response), (Get-Variable Running))
             Write-Verbose "Request accepted for $($Request.Url)"
