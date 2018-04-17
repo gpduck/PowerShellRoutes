@@ -177,6 +177,7 @@ function Start-WebServer {
         $Stream.CopyTo($Response.OutputStream)
         #$Response.OutputStream.Write($Buffer, 0 , $Buffer.Length)
         $Response.OutputStream.Close()
+        $Stream.Dispose()
     }
 
     if(!$Routes.Contains("Exit")) {
