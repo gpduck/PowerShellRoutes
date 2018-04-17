@@ -129,7 +129,12 @@ function Start-WebServer {
         param(
             $Extension
         )
-        (Get-ItemProperty "HKLM:\Software\Classes\$Extension" -Name "Content Type" -ErrorAction SilentlyContinue)."Content Type"
+        $ContentType = (Get-ItemProperty "HKLM:\Software\Classes\$Extension" -Name "Content Type" -ErrorAction SilentlyContinue)."Content Type"
+        if($ContentType) {
+            $ContentType
+        } else {
+            "text/plain"
+        }
     }
 
     function Send-Response {
